@@ -10,7 +10,7 @@ from selenium.webdriver.chrome.options import Options
 
 # --- Step 1: User Inputs ---
 chrome_path = input("Enter the full path to your ChromeDriver (e.g., C:\\path\\to\\chromedriver.exe): ").strip()
-keyword = input("Enter the search keyword (e.g., 'Ethiopian landscape'): ").strip()
+keyword = input("Enter the search keyword (e.g., 'Albert Einstein'): ").strip()
 
 # Automatically create a folder named after the keyword
 download_path = os.path.join(os.getcwd(), keyword.replace(" ", "_"))
@@ -107,3 +107,4 @@ for i, url in enumerate(all_urls):
 
 wd.quit()
 print(f"\n🎉 Scraping complete! All images saved in: {download_path}")
+
