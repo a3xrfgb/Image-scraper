@@ -37,10 +37,10 @@ Download it from here ------> [ChromeWebDriver Link](https://googlechromelabs.gi
   
 for windows
 ```
-/Users/example/Downloads/chrome driver/chromedriver.exe
+/Users/Jhon/chromedriver/chromedriver.exe
 ```
 
 for mac
 ```
-/Users/example/Downloads/chrome driver/chromedriver
+/Users/Jhon/chromedriver/chromedriver
 ```
