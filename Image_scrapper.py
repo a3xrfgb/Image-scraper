@@ -1,4 +1,4 @@
-oimport os
+import os
 import time
 import requests
 from selenium import webdriver
@@ -8,104 +8,72 @@ from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import ElementClickInterceptedException, ElementNotInteractableException
 from webdriver_manager.chrome import ChromeDriverManager
 
-# --- Step 1: User Inputs ---
-keyword = input("Enter the search keyword (e.g., 'iceland landscapes'): ").strip()
+# Ask user for search keyword
+search_keyword = input("Enter the search keyword to scrape from Google Images: ").strip()
 
-# Create folder automatically
-download_path = os.path.join(os.getcwd(), keyword.replace(" ", "_"))
-os.makedirs(download_path, exist_ok=True)
-print(f"\n📂 Images will be saved in: {download_path}")
+# Create a folder with the same name
+folder_name = search_keyword.replace(" ", "_")
+if not os.path.isdir(folder_name):
+    os.makedirs(folder_name)
 
-# --- Step 2: Configure Chrome ---
-chrome_options = Options()
-chrome_options.add_argument("--headless")  # comment this line to see browser
-chrome_options.add_argument("--disable-gpu")
-chrome_options.add_argument("--no-sandbox")
-chrome_options.add_argument("--log-level=3")
-chrome_options.add_argument("--window-size=1920,1080")
-
-service = Service(ChromeDriverManager().install())
-wd = webdriver.Chrome(service=service, options=chrome_options)
-
-# --- Step 3: Scroll + High-res Fetch ---
-def get_highres_images(wd, keyword, max_images=200, delay=1):
-    search_url = f"https://www.google.com/search?q={keyword}&tbm=isch"
-    wd.get(search_url)
-    image_urls = set()
-    skips = 0
-
-    def scroll_down():
-        wd.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-        time.sleep(delay)
-
-    print(f"\n🔍 Collecting full-resolution images for '{keyword}' ...")
-
-    while len(image_urls) < max_images:
-        # Try multiple selectors (Google changes often)
-        thumbnails = wd.find_elements(By.CSS_SELECTOR, "img[jsname='Q4LuWd'], img.YQ4gaf, img.sFlh5c")
-        print(f"🖼️ Found {len(thumbnails)} thumbnails so far...")
-
-        if len(thumbnails) == 0:
-            scroll_down()
-            continue
-
-        for thumb in thumbnails[len(image_urls)+skips:max_images]:
-            try:
-                wd.execute_script("arguments[0].scrollIntoView();", thumb)
-                thumb.click()
-                time.sleep(1.5)
-            except (ElementClickInterceptedException, ElementNotInteractableException):
-                skips += 1
-                continue
-
-            # Multiple fallback patterns for high-res images
-            images = wd.find_elements(By.CSS_SELECTOR, "img.n3VNCb, img.r48jcc, img.sFlh5c, img.YQ4gaf")
-            for image in images:
-                src = image.get_attribute("src")
-                if src and src.startswith("http") and not src.startswith("data:"):
-                    if src not in image_urls:
-                        image_urls.add(src)
-                        print(f"✅ Found high-res image {len(image_urls)}")
-            if len(image_urls) >= max_images:
-                break
-        else:
-            scroll_down()
-
-        # Try clicking “Show more results” if available
-        try:
-            more_button = wd.find_element(By.CSS_SELECTOR, ".YstHxe input")
-            wd.execute_script("arguments[0].click();", more_button)
-        except Exception:
-            pass
-
-        if len(thumbnails) == 0:
-            break
-
-    print(f"\n✅ Collected {len(image_urls)} unique image URLs.")
-    return image_urls
-
-
-# --- Step 4: Download Function ---
-def download_image(download_path, url, file_name):
+def download_image(url, folder_name, num):
     try:
         response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        ext = os.path.splitext(url.split("?")[0])[1].lower()
-        if ext not in [".jpg", ".jpeg", ".png", ".webp", ".gif", ".bmp", ".tiff"]:
-            ext = ".jpg"
-        file_path = os.path.join(download_path, f"{file_name}{ext}")
-        with open(file_path, "wb") as f:
-            f.write(response.content)
-        print(f"💾 Saved: {file_name}{ext}")
+        if response.status_code == 200:
+            with open(os.path.join(folder_name, f"{num}.jpg"), "wb") as file:
+                file.write(response.content)
     except Exception as e:
-        print(f"⚠️ Skipped {url}: {e}")
+        print(f"Error downloading image {num}: {e}")
 
-# --- Step 5: Run ---
-urls = get_highres_images(wd, keyword, max_images=150, delay=1)
-print(f"\n📸 Ready to download {len(urls)} images...\n")
+# Build URL
+search_URL = f"https://www.google.com/search?q={search_keyword}&tbm=isch"
 
-for i, url in enumerate(urls):
-    download_image(download_path, url, f"{keyword.replace(' ', '_')}_{i}")
+# Setup Chrome options
+chrome_options = Options()
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
 
-wd.quit()
-print(f"\n🎉 Done! All images saved in: {download_path}")
+# Initialize Chrome
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=chrome_options)
+
+print("Opening browser and loading images...")
+driver.get(search_URL)
+time.sleep(3)
+
+# Scroll down multiple times to load images
+for _ in range(4):
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(2)
+
+# --- FIX: Use robust XPath for thumbnails ---
+thumbnails = driver.find_elements(
+    By.XPATH, '//img[contains(@src, "gstatic.com") and contains(@src, "encrypted-tbn0")]'
+)
+
+print(f"Found {len(thumbnails)} thumbnails. Fetching full-resolution images...")
+
+count = 0
+for idx, thumbnail in enumerate(thumbnails):
+    try:
+        driver.execute_script("arguments[0].scrollIntoView();", thumbnail)
+        time.sleep(0.3)
+        thumbnail.click()
+        time.sleep(1.5)
+    except (ElementClickInterceptedException, ElementNotInteractableException):
+        continue
+    except Exception:
+        continue
+
+    # Look for actual full-size image that appears after clicking
+    actual_images = driver.find_elements(By.XPATH, '//img[contains(@src, "https://") and not(contains(@src, "encrypted-tbn0"))]')
+    for img in actual_images:
+        src = img.get_attribute("src")
+        if src and src.startswith("https://") and not src.startswith("data:image"):
+            count += 1
+            download_image(src, folder_name, count)
+            print(f"Downloaded image {count}")
+            break
+
+print(f"✅ Done! {count} full-resolution images downloaded into '{folder_name}'")
+driver.quit()
