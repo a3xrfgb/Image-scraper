@@ -23,6 +23,21 @@ pip install Pillow
 pip install selenium
 ```
 
+- Install web driver
+```
+pip3 install webdriver-manager
+```
+## If you’re using a virtual environment:
+```
+python3 -m pip install webdriver-manager
+```
+```
+python3 -m pip3 install Pillow
+```
+```
+python3 -m pip3 install selenium
+```
+
 ---
 ## Step 2
 - Chrome WebDriver Download
