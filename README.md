@@ -31,3 +31,16 @@ Note: Make sure your Google chrome browser version matches the Chrome WebDriver.
 (otherwise it wont work)
 
 Download it from here ------> [ChromeWebDriver Link](https://googlechromelabs.github.io/chrome-for-testing/#stable)
+
+## Step 3
+- When the script asks you for the directory of the chrome driver, copy paste this:
+  
+for windows
+```
+/Users/example/Downloads/chrome driver/chromedriver.exe
+```
+
+for mac
+```
+/Users/example/Downloads/chrome driver/chromedriver
+```
