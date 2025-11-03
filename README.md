@@ -1,6 +1,4 @@
-# Web Image-scraper
-
-## Python based web-image scrapping script for ML Projects.
+# Image-scraper
 
 Use proxies by anymean while scapping the web!
 
@@ -9,13 +7,20 @@ Use proxies by anymean while scapping the web!
 How to Use the script
 ## Step 1
 - Install dependencies
-
 ```
 pip3 install Pillow
 ```
-
 ```
 pip3 install selenium
+```
+
+or
+
+```
+pip install Pillow
+```
+```
+pip install selenium
 ```
 
 ---
