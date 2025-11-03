@@ -6,7 +6,13 @@ Use proxies by anymean while scapping the web!
 
 How to Use the script
 ## Step 1
-- Install dependencies
+
+```
+pip install -r requirements.txt 
+```
+
+Install dependencie
+  
 ```
 pip3 install Pillow
 ```
