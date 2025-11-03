@@ -73,92 +73,111 @@ for _ in range(5):
     time.sleep(2)
 
 print("Fetching full-resolution images...")
+print("Press Ctrl+C to stop downloading at any time.\n")
 
 count = 0
 idx = 0
-max_images = 50
 
-while count < max_images:
-    try:
-        # Make sure we're on the main window
-        if driver.current_window_handle != main_window:
-            driver.switch_to.window(main_window)
-        
-        # Close any extra tabs that might have opened
-        if len(driver.window_handles) > 1:
-            for handle in driver.window_handles:
-                if handle != main_window:
-                    driver.switch_to.window(handle)
-                    driver.close()
-            driver.switch_to.window(main_window)
-        
-        # Re-find thumbnails each iteration to avoid stale elements
-        thumbnails = driver.find_elements(By.CSS_SELECTOR, "img.rg_i")
-        
-        if not thumbnails:
-            thumbnails = driver.find_elements(By.CSS_SELECTOR, "img.YQ4gaf")
-        
-        # Break if we've processed all available thumbnails
-        if idx >= len(thumbnails):
-            print("No more thumbnails available")
-            break
-        
-        thumbnail = thumbnails[idx]
-        idx += 1
-        
+try:
+    while True:  # Run indefinitely until user stops
         try:
-            # Scroll thumbnail into view
-            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", thumbnail)
-            time.sleep(0.5)
+            # Make sure we're on the main window
+            if driver.current_window_handle != main_window:
+                driver.switch_to.window(main_window)
             
-            # Click thumbnail to open preview
-            thumbnail.click()
-            time.sleep(2)
+            # Close any extra tabs that might have opened
+            if len(driver.window_handles) > 1:
+                for handle in driver.window_handles:
+                    if handle != main_window:
+                        driver.switch_to.window(handle)
+                        driver.close()
+                driver.switch_to.window(main_window)
             
-        except (ElementClickInterceptedException, ElementNotInteractableException, StaleElementReferenceException):
-            continue
-        
-        # Method 1: Try to find the full-size image in the preview panel
-        try:
-            full_image = driver.find_element(By.CSS_SELECTOR, "img.sFlh5c.pT0Scc.iPVvYb")
-            src = full_image.get_attribute("src")
+            # Re-find thumbnails each iteration to avoid stale elements
+            thumbnails = driver.find_elements(By.CSS_SELECTOR, "img.rg_i")
             
-            if src and src.startswith("http") and "encrypted-tbn0" not in src:
-                if download_image(src, folder_name, count + 1):
-                    count += 1
-                    print(f"Downloaded image {count}")
-                    continue
-        except (NoSuchElementException, StaleElementReferenceException):
-            pass
-        
-        # Method 2: Try alternative selectors for the preview image
-        try:
-            images = driver.find_elements(By.CSS_SELECTOR, "img[src^='http']")
-            for img in images:
+            if not thumbnails:
+                thumbnails = driver.find_elements(By.CSS_SELECTOR, "img.YQ4gaf")
+            
+            # Break if we've processed all available thumbnails
+            if idx >= len(thumbnails):
+                print("\nReached end of available images. Scrolling for more...")
+                # Scroll down more to load additional images
+                driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                time.sleep(2)
+                
+                # Try to click "Show more results" button if it exists
                 try:
-                    src = img.get_attribute("src")
-                    # Filter out thumbnails and Google's own images
-                    if (src and src.startswith("http") and 
-                        "encrypted-tbn0" not in src and 
-                        "gstatic" not in src and
-                        "google.com/images" not in src):
-                        
-                        if download_image(src, folder_name, count + 1):
-                            count += 1
-                            print(f"Downloaded image {count}")
-                            break
-                except StaleElementReferenceException:
-                    continue
+                    show_more = driver.find_element(By.CSS_SELECTOR, "input.mye4qd")
+                    show_more.click()
+                    time.sleep(3)
+                    print("Loaded more images...")
+                except:
+                    pass
+                
+                # Reset to continue with newly loaded images
+                idx = len(thumbnails) - 10 if len(thumbnails) > 10 else 0
+                continue
+            
+            thumbnail = thumbnails[idx]
+            idx += 1
+            
+            try:
+                # Scroll thumbnail into view
+                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", thumbnail)
+                time.sleep(0.5)
+                
+                # Click thumbnail to open preview
+                thumbnail.click()
+                time.sleep(2)
+                
+            except (ElementClickInterceptedException, ElementNotInteractableException, StaleElementReferenceException):
+                continue
+            
+            # Method 1: Try to find the full-size image in the preview panel
+            try:
+                full_image = driver.find_element(By.CSS_SELECTOR, "img.sFlh5c.pT0Scc.iPVvYb")
+                src = full_image.get_attribute("src")
+                
+                if src and src.startswith("http") and "encrypted-tbn0" not in src:
+                    if download_image(src, folder_name, count + 1):
+                        count += 1
+                        print(f"Downloaded image {count}")
+                        continue
+            except (NoSuchElementException, StaleElementReferenceException):
+                pass
+            
+            # Method 2: Try alternative selectors for the preview image
+            try:
+                images = driver.find_elements(By.CSS_SELECTOR, "img[src^='http']")
+                for img in images:
+                    try:
+                        src = img.get_attribute("src")
+                        # Filter out thumbnails and Google's own images
+                        if (src and src.startswith("http") and 
+                            "encrypted-tbn0" not in src and 
+                            "gstatic" not in src and
+                            "google.com/images" not in src):
+                            
+                            if download_image(src, folder_name, count + 1):
+                                count += 1
+                                print(f"Downloaded image {count}")
+                                break
+                    except StaleElementReferenceException:
+                        continue
+            except Exception as e:
+                print(f"Error processing thumbnail {idx}: {e}")
+                continue
+                
+        except StaleElementReferenceException:
+            print(f"Stale element at index {idx}, retrying...")
+            continue
         except Exception as e:
             print(f"Error processing thumbnail {idx}: {e}")
             continue
-            
-    except StaleElementReferenceException:
-        print(f"Stale element at index {idx}, retrying...")
-        continue
-    except Exception as e:
-        print(f"Error processing thumbnail {idx}: {e}")
-        continue
+
+except KeyboardInterrupt:
+    print("\n\n🛑 Download stopped by user!")
 
 # Final cleanup: close any extra windows
 if len(driver.window_handles) > 1:
@@ -168,6 +187,6 @@ if len(driver.window_handles) > 1:
             driver.close()
     driver.switch_to.window(main_window)
 
-print(f"✅ Done! {count} full-resolution images downloaded into '{folder_name}'")
+print(f"\n✅ Done! {count} full-resolution images downloaded into '{folder_name}'")
 print(f"📊 Processed {idx} thumbnails total")
 driver.quit()
