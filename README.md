@@ -43,14 +43,6 @@ pip install openai pandas pyarrow pillow selenium webdriver-manager
 >
 > 7, [Alamy.py](https://github.com/agxagi/Image-scraper/blob/main/Alamy.py) = Alamy API based scrapper
 
-## Features
-
-✨ **High-Resolution Downloads** - Fetches full-size images, not thumbnails  
-🚫 **No Duplicates** - Automatically skips already downloaded images  
-📁 **Auto-Organize** - Creates folders based on search keywords  
-🔄 **Single Tab Operation** - Stays on one tab without opening multiple windows  
-⚡ **Smart Error Handling** - Handles stale elements and connection issues gracefully
-
 ---
 
 # Manual scrapping websites
