@@ -20,12 +20,17 @@ cd Image-scraper
 ```
 pip install -r requirements.txt
 ```
+
 or
 
 ```
 pip install openai pandas pyarrow pillow selenium webdriver-manager
 ```
 ---
+
+> # Scripts
+> 1, [scrape_all_images.py](scrape_all_images.py) = scarpes all types of resolution
+> 2,
 
 
 
