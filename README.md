@@ -28,6 +28,9 @@ pip install openai pandas pyarrow pillow selenium webdriver-manager
 ```
 ---
 
+# Master_scrapper
+> [Master_scrapper.py]()
+
 # Scripts
 > 1, [scrape_all_images.py](https://github.com/agxagi/Image-scraper/blob/main/scrape_all_images.py) = scarpes all types of resolution
 >
