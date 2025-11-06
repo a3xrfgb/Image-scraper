@@ -1,4 +1,4 @@
-# Advanced Google Images Scraper
+# Advanced High-Resolution Google Images Scraper
   Use proxies PLEASE!
 
 - Get Proxy here -------> [Smart Proxies](https://stormproxies.com/discount.html)
@@ -7,13 +7,6 @@
   
 - Note: Make sure your Google chrome browser version matches the Chrome WebDriver.
 (otherwise it wont work)
-
-## Features
-✨ **High-Resolution Downloads** - Fetches full-size images, not thumbnails  
-🚫 **No Duplicates** - Automatically skips already downloaded images  
-📁 **Auto-Organize** - Creates folders based on search keywords  
-🔄 **Single Tab Operation** - Stays on one tab without opening multiple windows  
-⚡ **Smart Error Handling** - Handles stale elements and connection issues gracefully
 
 ## Installation
 
@@ -32,17 +25,17 @@ or
 ```
 pip install openai pandas pyarrow pillow selenium webdriver-manager
 ```
-
-## Usage
-
-1. Run the script:
-```bash
-python google-images-scraper.py
-```
 ---
 
 
 
-## Disclaimer
 
-This tool is provided as-is without any warranties. The authors are not responsible for any misuse of this tool or violations of terms of service. Use responsibly and ethically.
+
+
+---
+## Features
+✨ **High-Resolution Downloads** - Fetches full-size images, not thumbnails  
+🚫 **No Duplicates** - Automatically skips already downloaded images  
+📁 **Auto-Organize** - Creates folders based on search keywords  
+🔄 **Single Tab Operation** - Stays on one tab without opening multiple windows  
+⚡ **Smart Error Handling** - Handles stale elements and connection issues gracefully
