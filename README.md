@@ -1,31 +1,30 @@
 # Advanced High-Resolution Google Images Scraper
   Use proxies PLEASE!
 
-- Get Proxy here -------> [Smart Proxies](https://stormproxies.com/discount.html)
+- Get Proxy here: [Smart Proxies](https://stormproxies.com/discount.html)
 
-- Get Chrome WebDriver Download------> [ChromeWebDriver Link](https://googlechromelabs.github.io/chrome-for-testing/#stable)
+- Get Chrome WebDriver Download: [ChromeWebDriver Link](https://googlechromelabs.github.io/chrome-for-testing/#stable)
   
 - Note: Make sure your Google chrome browser version matches the Chrome WebDriver.
 (otherwise it wont work)
 
 ## Installation
 
-1. Clone this repository:
+1. Clone repo & Install dependencies:
 ```
 git clone https://github.com/agxagi/Image-scraper.git
 cd Image-scraper
 ```
 
-2. Install required dependencies:
 ```
 pip install -r requirements.txt
 ```
 
-# Master_scrapper V1
-Install these dependecies 1st
 ```
 pip install openai pandas pyarrow pillow selenium webdriver-manager
 ```
+
+# Master_scrapper V1
 The [Master_scrapper.py](https://github.com/agxagi/Image-scraper/blob/main/Master_scrapper.py) script have the following advanced features:
 - Ask users to put `Search Keyword`
 - Ask users to put `Pixel Amount to download images`
