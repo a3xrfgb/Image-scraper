@@ -21,17 +21,23 @@ cd Image-scraper
 pip install -r requirements.txt
 ```
 
-or
-
+# Master_scrapper V1
+Install these dependecies 1st
 ```
 pip install openai pandas pyarrow pillow selenium webdriver-manager
 ```
+The [Master_scrapper.py](https://github.com/agxagi/Image-scraper/blob/main/Master_scrapper.py) script have the following advanced features:
+- Ask users to put `Search Keyword`
+- Ask users to put `Pixel Amount to download images`
+- Ask users for their `OPENAI API KEY`
+- Caption Images in Exqusite detail using GPTVision
+- Automatically creates a folder same as the `search keyword` 
+- Then Download & save the images in that folder
+- Create an advanced `metadata` files. both `.JSNOL` & `Parquet` files to upload on Hugging face dataset.
+
 ---
-
-# Master_scrapper
-> [Master_scrapper.py]()
-
-# Scripts
+  
+# My other Scripts
 > 1, [scrape_all_images.py](https://github.com/agxagi/Image-scraper/blob/main/scrape_all_images.py) = scarpes all types of resolution
 >
 > 2, [pixel_based_scrapper.py](https://github.com/agxagi/Image-scraper/blob/main/pixel_based_scrapper.py) = Pixel resolution based scrapper(Start with >300000px)
