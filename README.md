@@ -1,4 +1,4 @@
-# Advanced High-Resolution Google Images Scraper
+# Advanced High-Resolution Images Scraper
   Use proxies PLEASE!
 
 - Get Proxy here: [Smart Proxies](https://stormproxies.com/discount.html)
